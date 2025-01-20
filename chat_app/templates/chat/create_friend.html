@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>all_friends</title>
+    <style>
+        /* Reset some default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* General body styling */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+    color: #333;
+    padding: 20px;
+}
+
+/* Styling for header and title */
+header {
+    text-align: center;
+    padding: 20px 0;
+    background-color: #333;
+    color: white;
+    margin-bottom: 20px;
+}
+
+/* Heading for the page */
+h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+/* Center content block styling */
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Footer styling */
+footer {
+    text-align: center;
+    padding: 10px 0;
+    margin-top: 20px;
+    background-color: #333;
+    color: white;
+}
+
+/* Link styling */
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    main {
+        padding: 15px;
+    }
+}
+
+    </style>
+</head>
+<body>
+        <center>
+            <h1>Suggested Friend List</h1>
+            <hr/>
+        </center>
+        <br>
+
+        {% if messages %}
+            {% for message in messages%}
+                <h3 style="background-color: rgb(203, 231, 160); padding: 5px; border: 2px solid rgb(55, 255, 5);">{{message}}<a href="{% url 'friend_list' %}" style="text-decoration: none;"> <strong>  🔰See My Chat List🔰</strong></a></h3>
+            {% endfor %}
+        {% endif %}
+
+        <div style="height: 50%; width: 50%; background-color: paleturquoise;">
+            {% for user in all_user %}
+                <hr/>
+            <h3 style="margin-left: 3px;">🧑 {{user.username| title}}
+                <small><button style="background-color: rgb(164, 114, 211); margin-left: 8px;"><a href="{% url 'create_friend' %}?id={{user.id}}" style="text-decoration: none; color: white;"><strong> Add Friend</strong></a></button></small>
+            </h3>
+            {% endfor %}
+            <hr />
+        </div>
+        <p>No more users....</p>
+</body>
+</html>

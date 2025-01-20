@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <style>
+        /* Reset some default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* General body styling */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+    color: #333;
+    padding: 20px;
+}
+
+/* Styling for header and title */
+header {
+    text-align: center;
+    padding: 20px 0;
+    background-color: #333;
+    color: white;
+    margin-bottom: 20px;
+}
+
+/* Heading for the page */
+h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+/* Center content block styling */
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Footer styling */
+footer {
+    text-align: center;
+    padding: 10px 0;
+    margin-top: 20px;
+    background-color: #333;
+    color: white;
+}
+
+/* Link styling */
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    main {
+        padding: 15px;
+    }
+}
+
+    </style>
+</head>
+<body>
+
+
+    {% block content %}
+    {% endblock %}
+
+    <span hidden id='personal_room'>{{request.user.id}}</span>
+
+    <script>
+            const PersonalroomName = JSON.parse(document.getElementById('personal_room').textContent);
+            const PersonalSocket = new WebSocket(
+                'ws://' + window.location.host + '/ws/personal_chat/' + PersonalroomName + '/'
+            );
+            const set_online = () => {
+                setTimeout(() => {
+                    PersonalSocket.send(JSON.stringify({
+                        'msg_type': 'WENT_ONLINE',
+                        'user_id': '{{request.user.id}}'
+                    }));
+                }, 1000)
+            }
+
+            document.addEventListener("visibilitychange", event => {
+                    if (document.visibilityState == "visible") {
+                        if (PersonalSocket.readyState === WebSocket.OPEN){
+                            PersonalSocket.send(JSON.stringify({
+                                'msg_type': 'WENT_ONLINE',
+                                'user_id': '{{request.user.id}}'
+                            }));
+                        }
+                    }
+                    else{
+                        if(PersonalSocket.readyState === WebSocket.OPEN){
+                                    PersonalSocket.send(JSON.stringify({
+                                        'msg_type': 'WENT_OFFLINE',
+                                        'user_id': '{{request.user.id}}'
+                                    }));
+                            }
+                        }
+                }
+            );
+
+            PersonalSocket.onopen = set_online();
+    </script>
+
+    {% block script %}
+    {% endblock %}
+
+</body>
+</html>
